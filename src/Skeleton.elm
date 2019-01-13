@@ -44,24 +44,12 @@ viewHeader =
             [ position relative
             , displayFlex
             , alignItems center
-            , afterHeader
+            , margin (px -6)
+            , marginBottom (px 0)
+            , boxShadow4 (px 0) (px 0) (px 10) (rgba 0 0 0 0.5)
             ]
         ]
         [ viewLogo ]
-
-
-afterHeader : Style
-afterHeader =
-    after
-        [ position absolute
-        , bottom (px 0)
-        , left (pct 50)
-        , width (px 60)
-        , height (px 1)
-        , backgroundColor (hex "000")
-        , transform (translateX (pct -50))
-        , property "content" "''"
-        ]
 
 
 viewLogo : Html msg
@@ -70,8 +58,8 @@ viewLogo =
         [ h1
             [ css
                 [ fontFamilies [ "DejaVu Sans" ]
-                , fontWeight normal
-                , fontSize (rem 2)
+                , fontWeight (int 300)
+                , fontSize (rem 2.5)
                 ]
             ]
             [ a [ href "/", css [ textDecoration none, color (hex "000") ] ] [ text "Sharie" ]
