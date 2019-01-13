@@ -1,6 +1,8 @@
 module Page.Listings exposing (Model, Msg, init, update, view)
 
-import Html.Styled exposing (Html, div, h1, text)
+import Css exposing (..)
+import Html.Styled exposing (..)
+import Html.Styled.Attributes exposing (css, href)
 import Http
 import Json.Decode as Decode
 import Listing
@@ -32,7 +34,7 @@ init : Session.Data -> ( Model, Cmd Msg )
 init session =
     ( Model session Loading
     , Http.get
-        { url = "/listings"
+        { url = "/listings.json"
         , expect = Http.expectJson GotListings Listing.decoder
         }
     )
@@ -77,9 +79,24 @@ viewListings listings =
             text "Loading listings..."
 
         Success l ->
-            div [] (List.map viewListing l)
+            div [ css [ displayFlex ] ] (List.map viewListing l)
 
 
 viewListing : Listing.Model -> Html Msg
 viewListing listing =
-    h1 [] [ text listing.title ]
+    a
+        [ css
+            [ display block
+            , borderRadius (px 20)
+            , border3 (px 1) solid (rgba 0 0 0 0.05)
+            , margin (px 8)
+            , padding2 (px 8) (px 12)
+            , fontSize (rem 1)
+            , textDecoration none
+            , color (hex "000")
+            , hover
+                [ boxShadow4 (px 0) (px 1) (px 3) (rgba 0 0 0 0.5) ]
+            ]
+        , href ("/listings/" ++ listing.id)
+        ]
+        [ text listing.title ]

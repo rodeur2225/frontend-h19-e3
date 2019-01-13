@@ -1,0 +1,16 @@
+{
+  "listings": [
+    {
+      "id": "1",
+      "title": "Washing machine"
+    },
+    {
+      "id": "2",
+      "title": "Hairdryer"
+    },
+    {
+      "id": "3",
+      "title": "Gardening"
+    }
+  ]
+}

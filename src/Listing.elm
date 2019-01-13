@@ -1,6 +1,6 @@
 module Listing exposing (Model, decoder)
 
-import Json.Decode exposing (Decoder, field, list, map, string)
+import Json.Decode exposing (Decoder, field, list, map, map2, string)
 
 
 
@@ -8,16 +8,16 @@ import Json.Decode exposing (Decoder, field, list, map, string)
 
 
 type alias Model =
-    { title : String }
+    { id : String, title : String }
 
 
 
 -- INIT
 
 
-init : String -> ( Model, Cmd Msg )
-init title =
-    ( Model title, Cmd.none )
+init : String -> String -> ( Model, Cmd Msg )
+init id title =
+    ( Model id title, Cmd.none )
 
 
 
@@ -32,6 +32,11 @@ type Msg
 -- DECODER
 
 
+idDecoder : Decoder String
+idDecoder =
+    field "id" string
+
+
 titleDecoder : Decoder String
 titleDecoder =
     field "title" string
@@ -39,7 +44,7 @@ titleDecoder =
 
 listingDecoder : Decoder Model
 listingDecoder =
-    map Model titleDecoder
+    map2 Model idDecoder titleDecoder
 
 
 decoder : Decoder (List Model)
