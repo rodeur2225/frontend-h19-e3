@@ -2,15 +2,21 @@
   "listings": [
     {
       "id": "1",
-      "title": "Washing machine"
+      "title": "Machine à laver",
+      "owner": "Ian Letourneau",
+      "description": "Fidèle de père en fils, cette vieille mais brave machine à laver saura vous surprendre avec la qualité de ses lavages. Vos vêtements sortiront plus doux que jamais!"
     },
     {
       "id": "2",
-      "title": "Hairdryer"
+      "title": "Sèche cheveux",
+      "owner": "Ian Letourneau",
+      "description": ""
     },
     {
       "id": "3",
-      "title": "Gardening"
+      "title": "Jardinage",
+      "owner": "Ian Letourneau",
+      "description": ""
     }
   ]
 }

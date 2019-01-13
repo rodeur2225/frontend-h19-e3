@@ -66,7 +66,14 @@ update message model =
 
 view : Model -> Skeleton.Details Msg
 view model =
-    { title = "Listings", content = [ viewListings model.listings ] }
+    { title = "Listings"
+    , content =
+        [ div [ css [ padding (px 16) ] ]
+            [ h1 [ css [ fontWeight (int 300) ] ] [ text "Services et échanges disponibles" ]
+            , viewListings model.listings
+            ]
+        ]
+    }
 
 
 viewListings : Status (List Listing.Model) -> Html Msg
