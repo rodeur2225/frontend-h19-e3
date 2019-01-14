@@ -1,6 +1,8 @@
 module Listing exposing (Model, decoder, listingDecoder)
 
-import Json.Decode exposing (Decoder, field, list, map4, string)
+import Json.Decode exposing (Decoder, field, list, map, map5, string)
+import Json.Decode.Extra exposing (datetime)
+import Time
 
 
 
@@ -8,16 +10,16 @@ import Json.Decode exposing (Decoder, field, list, map4, string)
 
 
 type alias Model =
-    { id : String, title : String, owner : String, description : String }
+    { id : String, title : String, owner : String, description : String, availabilities : List Time.Posix }
 
 
 
 -- INIT
 
 
-init : String -> String -> String -> String -> ( Model, Cmd Msg )
-init id title owner description =
-    ( Model id title owner description, Cmd.none )
+init : String -> String -> String -> String -> List Time.Posix -> ( Model, Cmd Msg )
+init id title owner description availabilities =
+    ( Model id title owner description availabilities, Cmd.none )
 
 
 
@@ -52,9 +54,14 @@ descriptionDecoder =
     field "description" string
 
 
+availabilitiesDecoder : Decoder (List Time.Posix)
+availabilitiesDecoder =
+    field "availabilities" (list datetime)
+
+
 listingDecoder : Decoder Model
 listingDecoder =
-    map4 Model idDecoder titleDecoder ownerDecoder descriptionDecoder
+    map5 Model idDecoder titleDecoder ownerDecoder descriptionDecoder availabilitiesDecoder
 
 
 decoder : Decoder (List Model)
