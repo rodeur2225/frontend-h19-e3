@@ -1,5 +1,7 @@
 module Page.BookListing exposing (Model, Msg(..), init, update, view)
 
+import Api
+import Api.Endpoint exposing (bookListing, listing)
 import Css exposing (..)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (checked, css, for, hidden, id, type_, value)
@@ -32,12 +34,7 @@ type Status a
 
 init : Session.Data -> String -> ( Model, Cmd Msg )
 init session id =
-    ( Model session Loading []
-    , Http.get
-        { url = "/listings/" ++ id ++ ".json"
-        , expect = Http.expectJson GotListing Listing.listingDecoder
-        }
-    )
+    ( Model session Loading [], Api.get (listing id) GotListing Listing.listingDecoder )
 
 
 
@@ -73,11 +70,7 @@ update message model =
             case model.listing of
                 Success listing ->
                     ( model
-                    , Http.post
-                        { url = "/listings/" ++ listing.id ++ "/book"
-                        , body = Http.jsonBody (encodeBookings model.bookings)
-                        , expect = Http.expectWhatever ListingBooked
-                        }
+                    , Api.post (bookListing listing.id) (encodeBookings model.bookings) ListingBooked
                     )
 
                 _ ->

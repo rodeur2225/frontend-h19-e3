@@ -1,5 +1,7 @@
 module Page.Listings exposing (Model, Msg, init, update, view)
 
+import Api
+import Api.Endpoint exposing (listings)
 import Css exposing (..)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (css, href)
@@ -32,12 +34,7 @@ type Status a
 
 init : Session.Data -> ( Model, Cmd Msg )
 init session =
-    ( Model session Loading
-    , Http.get
-        { url = "/listings.json"
-        , expect = Http.expectJson GotListings Listing.decoder
-        }
-    )
+    ( Model session Loading, Api.get listings GotListings Listing.decoder )
 
 
 
