@@ -19,7 +19,7 @@ Now go to [http://localhost:8000/](http://localhost:8000/) and start looking at 
 ## Build the thing
 
 ```bash
-elm make src/Shareee.elm
+elm make src/Main.elm
 ```
 
 This will compile the sources as a single `index.html` file that you can now serve like any other HTML file.
