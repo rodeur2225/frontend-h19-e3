@@ -14,6 +14,7 @@ import Listing
 import Session
 import Skeleton
 import Time
+import Ui
 
 
 
@@ -160,25 +161,6 @@ viewAvailabilities bookings availabilities =
             , onSubmit SubmitBookings
             ]
             [ div [ css [ displayFlex, flexDirection row ] ] (List.map viewAvailabilityPartial availabilities)
-            , div []
-                [ input
-                    [ type_ "submit"
-                    , value "Réserver"
-                    , css
-                        [ backgroundColor transparent
-                        , margin (px 8)
-                        , padding2 (px 8) (px 12)
-                        , borderRadius (px 20)
-                        , border (px 0)
-                        , cursor pointer
-                        , fontWeight bold
-                        , fontSize (rem 1)
-                        , textTransform uppercase
-                        , hover
-                            [ boxShadow4 (px 0) (px 1) (px 3) (rgba 0 0 0 0.5) ]
-                        ]
-                    ]
-                    []
-                ]
+            , div [] [ Ui.submit [ value "Réserver" ] [] ]
             ]
         ]

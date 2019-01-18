@@ -13,6 +13,7 @@ import Listing
 import Session
 import Skeleton
 import Time
+import Ui
 
 
 
@@ -192,32 +193,13 @@ viewListingForm listing =
     form
         [ onSubmit SubmitListing
         ]
-        [ label [] [ text "Titre" ]
-        , input [ onInput ChangeTitle, value listing.title, placeholder "Titre" ] []
-        , label [] [ text "Propriétaire" ]
-        , input [ onInput ChangeOwner, value listing.owner, placeholder "Propriétaire" ] []
-        , label [] [ text "Description" ]
-        , textarea [ onInput ChangeDescription ] [ text listing.description ]
-        , label [] [ text "Disponibilités" ]
-        , div [ css [ displayFlex, flexDirection row ] ] (List.map viewAvailabilityPartial generateAvailabilities)
-        , input
-            [ type_ "submit"
-            , value "Ajouter"
-            , css
-                [ backgroundColor transparent
-                , margin (px 8)
-                , padding2 (px 8) (px 12)
-                , borderRadius (px 20)
-                , border (px 0)
-                , cursor pointer
-                , fontWeight bold
-                , fontSize (rem 1)
-                , textTransform uppercase
-                , hover
-                    [ boxShadow4 (px 0) (px 1) (px 3) (rgba 0 0 0 0.5) ]
-                ]
-            ]
-            []
+        [ Ui.label [] [ text "Titre" ]
+        , Ui.input [ onInput ChangeTitle, value listing.title, placeholder "Titre" ] []
+        , Ui.label [] [ text "Propriétaire" ]
+        , Ui.input [ onInput ChangeOwner, value listing.owner, placeholder "Propriétaire" ] []
+        , Ui.label [] [ text "Description" ]
+        , Ui.textarea [ onInput ChangeDescription ] [ text listing.description ]
+        , Ui.submit [ value "Ajouter" ] []
         ]
 
 
