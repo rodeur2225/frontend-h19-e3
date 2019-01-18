@@ -134,7 +134,7 @@ viewListing listing =
                 , color (rgba 0 0 0 0.6)
                 ]
             ]
-            [ text listing.owner ]
+            [ text listing.owner.name ]
         , p [] [ text listing.description ]
         ]
 

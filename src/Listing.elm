@@ -1,7 +1,7 @@
 module Listing exposing (Model, decoder, empty, encode, listingDecoder)
 
 import Iso8601
-import Json.Decode exposing (Decoder, field, list, map, map5, string)
+import Json.Decode exposing (Decoder, field, list, map, map3, map5, string)
 import Json.Decode.Extra exposing (datetime)
 import Json.Encode as Encode
 import Time
@@ -14,22 +14,31 @@ import Time
 type alias Model =
     { id : String
     , title : String
-    , owner : String
+    , owner : Owner
     , description : String
     , availabilities : List Time.Posix
     }
 
 
+type alias Owner =
+    { name : String, phoneNumber : String, email : String }
+
+
 empty : Model
 empty =
-    Model "" "" "" "" []
+    Model "" "" emptyOwner "" []
+
+
+emptyOwner : Owner
+emptyOwner =
+    Owner "" "" ""
 
 
 
 -- INIT
 
 
-init : String -> String -> String -> String -> List Time.Posix -> ( Model, Cmd Msg )
+init : String -> String -> Owner -> String -> List Time.Posix -> ( Model, Cmd Msg )
 init id title owner description availabilities =
     ( Model id title owner description availabilities, Cmd.none )
 
@@ -56,9 +65,14 @@ titleDecoder =
     field "title" string
 
 
-ownerDecoder : Decoder String
+ownerDecoder : Decoder Owner
 ownerDecoder =
-    field "owner" string
+    field "owner"
+        (map3 Owner
+            (field "name" string)
+            (field "phoneNumber" string)
+            (field "email" string)
+        )
 
 
 descriptionDecoder : Decoder String
@@ -85,7 +99,16 @@ encode : Model -> Encode.Value
 encode listing =
     Encode.object
         [ ( "title", Encode.string listing.title )
-        , ( "owner", Encode.string listing.owner )
+        , ( "owner", encodeOwner listing.owner )
         , ( "description", Encode.string listing.description )
         , ( "availabilities", Encode.list Iso8601.encode listing.availabilities )
+        ]
+
+
+encodeOwner : Owner -> Encode.Value
+encodeOwner owner =
+    Encode.object
+        [ ( "name", Encode.string owner.name )
+        , ( "phoneNumber", Encode.string owner.phoneNumber )
+        , ( "email", Encode.string owner.email )
         ]

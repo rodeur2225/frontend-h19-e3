@@ -3,7 +3,6 @@ module Page.Listings exposing (Model, Msg, init, update, view)
 import Api
 import Api.Endpoint exposing (createListing, listings)
 import Css exposing (..)
-import Form.AvailabilityInput
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (css, for, href, id, name, placeholder, type_, value)
 import Html.Styled.Events exposing (onInput, onSubmit)
@@ -33,10 +32,6 @@ type Status a
     | Success a
 
 
-type alias Availability =
-    Time.Posix
-
-
 
 -- INIT
 
@@ -52,11 +47,11 @@ init session =
 
 type Msg
     = GotListings (Result Http.Error (List Listing.Model))
-    | AddAvailability Availability
-    | RemoveAvailability Availability
     | ChangeTitle String
-    | ChangeOwner String
     | ChangeDescription String
+    | ChangeOwner String
+    | ChangePhoneNumber String
+    | ChangeEmail String
     | SubmitListing
     | ListingCreated (Result Http.Error ())
 
@@ -83,20 +78,6 @@ update message model =
                 _ ->
                     ( { model | listings = Success [ model.listing ], listing = Listing.empty }, Cmd.none )
 
-        AddAvailability avail ->
-            let
-                listing =
-                    model.listing
-            in
-            ( { model | listing = { listing | availabilities = avail :: listing.availabilities } }, Cmd.none )
-
-        RemoveAvailability avail ->
-            let
-                listing =
-                    model.listing
-            in
-            ( { model | listing = { listing | availabilities = List.filter (\a -> a /= avail) listing.availabilities } }, Cmd.none )
-
         ChangeTitle title ->
             let
                 listing =
@@ -104,19 +85,42 @@ update message model =
             in
             ( { model | listing = { listing | title = title } }, Cmd.none )
 
-        ChangeOwner owner ->
-            let
-                listing =
-                    model.listing
-            in
-            ( { model | listing = { listing | owner = owner } }, Cmd.none )
-
         ChangeDescription description ->
             let
                 listing =
                     model.listing
             in
             ( { model | listing = { listing | description = description } }, Cmd.none )
+
+        ChangeOwner name ->
+            let
+                listing =
+                    model.listing
+
+                owner =
+                    listing.owner
+            in
+            ( { model | listing = { listing | owner = { owner | name = name } } }, Cmd.none )
+
+        ChangePhoneNumber phone ->
+            let
+                listing =
+                    model.listing
+
+                owner =
+                    listing.owner
+            in
+            ( { model | listing = { listing | owner = { owner | phoneNumber = phone } } }, Cmd.none )
+
+        ChangeEmail email ->
+            let
+                listing =
+                    model.listing
+
+                owner =
+                    listing.owner
+            in
+            ( { model | listing = { listing | owner = { owner | email = email } } }, Cmd.none )
 
 
 
@@ -186,23 +190,18 @@ viewListing listing =
 
 viewListingForm : Listing.Model -> Html Msg
 viewListingForm listing =
-    let
-        viewAvailabilityPartial =
-            Form.AvailabilityInput.view listing.availabilities AddAvailability RemoveAvailability
-    in
     form
         [ onSubmit SubmitListing
         ]
         [ Ui.label [] [ text "Titre" ]
         , Ui.input [ onInput ChangeTitle, value listing.title, placeholder "Titre" ] []
-        , Ui.label [] [ text "Propriétaire" ]
-        , Ui.input [ onInput ChangeOwner, value listing.owner, placeholder "Propriétaire" ] []
         , Ui.label [] [ text "Description" ]
         , Ui.textarea [ onInput ChangeDescription ] [ text listing.description ]
+        , Ui.label [] [ text "Annonceur" ]
+        , Ui.input [ onInput ChangeOwner, value listing.owner.name, placeholder "Annonceur" ] []
+        , Ui.label [] [ text "Numéro de téléphone" ]
+        , Ui.input [ onInput ChangePhoneNumber, value listing.owner.phoneNumber, placeholder "Numéro de téléphone" ] []
+        , Ui.label [] [ text "E-mail" ]
+        , Ui.input [ onInput ChangeEmail, value listing.owner.email, placeholder "E-mail" ] []
         , Ui.submit [ value "Ajouter" ] []
         ]
-
-
-generateAvailabilities : List Availability
-generateAvailabilities =
-    List.map (\i -> Time.millisToPosix (1547596800000 + (i * 86400000))) (List.range 1 7)

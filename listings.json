@@ -3,21 +3,21 @@
     {
       "id": "1",
       "title": "Machine à laver",
-      "owner": "Ian Letourneau",
+      "owner": {"name": "Ian Letourneau", "phoneNumber": "", "email": ""},
       "description": "Fidèle de père en fils, cette vieille mais brave machine à laver saura vous surprendre avec la qualité de ses lavages. Vos vêtements sortiront plus doux que jamais!",
       "availabilities": ["2019-01-13T00:00:00Z", "2019-01-15T00:00:00Z", "2019-01-16T00:00:00Z"]
     },
     {
       "id": "2",
       "title": "Sèche cheveux",
-      "owner": "Ian Letourneau",
+      "owner": {"name": "Ian Letourneau", "phoneNumber": "", "email": ""},
       "description": "",
       "availabilities": ["2019-01-13T00:00:00Z", "2019-01-15T00:00:00Z", "2019-01-16T00:00:00Z"]
     },
     {
       "id": "3",
       "title": "Jardinage",
-      "owner": "Ian Letourneau",
+      "owner": {"name": "Ian Letourneau", "phoneNumber": "", "email": ""},
       "description": "",
       "availabilities": ["2019-01-13T00:00:00Z", "2019-01-15T00:00:00Z", "2019-01-16T00:00:00Z"]
     }
