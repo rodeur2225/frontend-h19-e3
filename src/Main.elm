@@ -99,7 +99,7 @@ stepUrl url model =
             answer
 
         Nothing ->
-            ( { model | page = NotFound session }, Cmd.none )
+            stepListings model (Listings.init session)
 
 
 stepListings : Model -> ( Listings.Model, Cmd Listings.Msg ) -> ( Model, Cmd Msg )

@@ -39,7 +39,7 @@ unwrap (Endpoint str) =
 
 url : List String -> List QueryParameter -> Endpoint
 url paths queryParams =
-    Url.Builder.crossOrigin "" paths queryParams |> Endpoint
+    Url.Builder.crossOrigin "http://localhost:9090" paths queryParams |> Endpoint
 
 
 
@@ -48,12 +48,12 @@ url paths queryParams =
 
 listings : Endpoint
 listings =
-    url [ "listings.json" ] []
+    url [ "listings" ] []
 
 
 listing : String -> Endpoint
 listing id =
-    url [ "listings", id ++ ".json" ] []
+    url [ "listings", id ] []
 
 
 bookListing : String -> Endpoint
