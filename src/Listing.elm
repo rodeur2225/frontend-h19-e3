@@ -101,7 +101,6 @@ encode listing =
         [ ( "title", Encode.string listing.title )
         , ( "owner", encodeOwner listing.owner )
         , ( "description", Encode.string listing.description )
-        , ( "availabilities", Encode.list Iso8601.encode listing.availabilities )
         ]
 
 
