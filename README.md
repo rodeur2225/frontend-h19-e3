@@ -14,7 +14,7 @@ cd officiel-projet-h19
 elm reactor
 ```
 
-Now go to [http://localhost:8000/](http://localhost:8000/) and start looking at the `src` directory. When you edit an Elm file, just refresh the corresponding page in your browser and it will recompile!
+Now go to [http://localhost:8000/](http://localhost:8000/) and start looking at the `src` directory. There is a `Main.elm` file that you can open to see the app. When you edit an Elm file, just refresh the corresponding page in your browser and it will recompile!
 
 ## Build the thing
 
