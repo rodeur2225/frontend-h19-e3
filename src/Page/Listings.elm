@@ -23,6 +23,7 @@ type alias Model =
     { session : Session.Data
     , listings : Status (List Listing.Model)
     , listing : Listing.Model
+    , error : Maybe String
     }
 
 
@@ -38,7 +39,7 @@ type Status a
 
 init : Session.Data -> ( Model, Cmd Msg )
 init session =
-    ( Model session Loading Listing.empty, Api.get listings GotListings Listing.decoder )
+    ( Model session Loading Listing.empty Nothing, Api.get listings GotListings Listing.decoder )
 
 
 
@@ -61,8 +62,26 @@ update message model =
     case message of
         GotListings result ->
             case result of
-                Err _ ->
-                    ( { model | listings = Failure }, Cmd.none )
+                Err e ->
+                    let
+                        error =
+                            case e of
+                                Http.BadUrl u ->
+                                    u
+
+                                Http.Timeout ->
+                                    "Timeout error"
+
+                                Http.NetworkError ->
+                                    "Network error"
+
+                                Http.BadStatus s ->
+                                    "Bad status: " ++ String.fromInt s
+
+                                Http.BadBody b ->
+                                    b
+                    in
+                    ( { model | listings = Failure, error = Just error }, Cmd.none )
 
                 Ok listings ->
                     ( { model | listings = Success listings }, Cmd.none )
@@ -71,12 +90,7 @@ update message model =
             ( model, Api.post createListing (Listing.encode model.listing) ListingCreated )
 
         ListingCreated _ ->
-            case model.listings of
-                Success listings ->
-                    ( { model | listings = Success (model.listing :: listings), listing = Listing.empty }, Cmd.none )
-
-                _ ->
-                    ( { model | listings = Success [ model.listing ], listing = Listing.empty }, Cmd.none )
+            ( model, Api.get listings GotListings Listing.decoder )
 
         ChangeTitle title ->
             let
@@ -131,7 +145,8 @@ view : Model -> Skeleton.Details Msg
 view model =
     { title = "Listings"
     , content =
-        [ div [ css [ displayFlex ] ]
+        [ viewError model.error
+        , div [ css [ displayFlex ] ]
             [ div
                 [ css
                     [ width (pct 50)
@@ -155,6 +170,24 @@ view model =
     }
 
 
+viewError : Maybe String -> Html Msg
+viewError error =
+    case error of
+        Just e ->
+            div
+                [ css
+                    [ margin2 (rem 1) (rem 0)
+                    , padding2 (rem 0.5) (rem 1)
+                    , backgroundColor (rgba 255 0 0 0.3)
+                    , borderRadius (px 5)
+                    ]
+                ]
+                [ p [] [ text e ] ]
+
+        Nothing ->
+            div [ css [ display none ] ] []
+
+
 viewListings : Status (List Listing.Model) -> Html Msg
 viewListings listings =
     case listings of
@@ -165,7 +198,11 @@ viewListings listings =
             text "Loading listings..."
 
         Success l ->
-            div [ css [ displayFlex ] ] (List.map viewListing l)
+            if List.length l > 0 then
+                div [ css [ displayFlex ] ] (List.map viewListing l)
+
+            else
+                text "No listings..."
 
 
 viewListing : Listing.Model -> Html Msg
