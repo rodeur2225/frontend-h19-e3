@@ -53,6 +53,7 @@ type Msg
     | ChangeOwner String
     | ChangePhoneNumber String
     | ChangeEmail String
+    | ChangePrice String
     | SubmitListing
     | ListingCreated (Result Http.Error ())
 
@@ -135,6 +136,13 @@ update message model =
                     listing.owner
             in
             ( { model | listing = { listing | owner = { owner | email = email } } }, Cmd.none )
+
+        ChangePrice price ->
+            let
+                listing =
+                    model.listing
+            in
+            ( { model | listing = { listing | price = price } }, Cmd.none )
 
 
 
@@ -240,5 +248,7 @@ viewListingForm listing =
         , Ui.input [ onInput ChangePhoneNumber, value listing.owner.phoneNumber, placeholder "Numéro de téléphone" ] []
         , Ui.label [] [ text "E-mail" ]
         , Ui.input [ onInput ChangeEmail, value listing.owner.email, placeholder "E-mail" ] []
+        , Ui.label [] [ text "Prix" ]
+        , Ui.input [ onInput ChangePrice, value listing.price, placeholder "Prix" ] []
         , Ui.submit [ value "Ajouter" ] []
         ]

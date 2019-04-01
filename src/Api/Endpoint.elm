@@ -39,7 +39,7 @@ unwrap (Endpoint str) =
 
 url : List String -> List QueryParameter -> Endpoint
 url paths queryParams =
-    Url.Builder.crossOrigin "http://localhost:9090" paths queryParams |> Endpoint
+    Url.Builder.crossOrigin "https://glo2003h19e3.herokuapp.com/" paths queryParams |> Endpoint
 
 
 

@@ -136,6 +136,7 @@ viewListing listing =
             ]
             [ text listing.owner.name ]
         , p [] [ text listing.description ]
+        , p [] [ text listing.price, text "$" ]
         ]
 
 

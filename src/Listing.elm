@@ -1,7 +1,7 @@
 module Listing exposing (Model, decoder, empty, encode, listingDecoder)
 
 import Iso8601
-import Json.Decode exposing (Decoder, field, list, map, map3, map5, string)
+import Json.Decode exposing (Decoder, field, list, map, map3, map5, map7, string, int)
 import Json.Decode.Extra exposing (datetime)
 import Json.Encode as Encode
 import Time
@@ -17,6 +17,8 @@ type alias Model =
     , owner : Owner
     , description : String
     , availabilities : List Time.Posix
+    , price : String
+    , feedbacks : List String
     }
 
 
@@ -26,7 +28,7 @@ type alias Owner =
 
 empty : Model
 empty =
-    Model "" "" emptyOwner "" []
+    Model "" "" emptyOwner "" [] "" []
 
 
 emptyOwner : Owner
@@ -38,9 +40,9 @@ emptyOwner =
 -- INIT
 
 
-init : String -> String -> Owner -> String -> List Time.Posix -> ( Model, Cmd Msg )
-init id title owner description availabilities =
-    ( Model id title owner description availabilities, Cmd.none )
+init : String -> String -> Owner -> String -> List Time.Posix -> String -> List String -> ( Model, Cmd Msg )
+init id title owner description availabilities price feedbacks =
+    ( Model id title owner description availabilities price feedbacks, Cmd.none )
 
 
 
@@ -84,10 +86,18 @@ availabilitiesDecoder : Decoder (List Time.Posix)
 availabilitiesDecoder =
     field "availabilities" (list datetime)
 
+priceDecoder : Decoder String
+priceDecoder=
+    field "price" string
+
+feedbacksDecoder : Decoder (List String)
+feedbacksDecoder =
+    field "feedbacks" (list string)
+
 
 listingDecoder : Decoder Model
 listingDecoder =
-    map5 Model idDecoder titleDecoder ownerDecoder descriptionDecoder availabilitiesDecoder
+    map7 Model idDecoder titleDecoder ownerDecoder descriptionDecoder availabilitiesDecoder priceDecoder feedbacksDecoder
 
 
 decoder : Decoder (List Model)
@@ -101,6 +111,7 @@ encode listing =
         [ ( "title", Encode.string listing.title )
         , ( "owner", encodeOwner listing.owner )
         , ( "description", Encode.string listing.description )
+        , ( "price", Encode.string listing.price)
         ]
 
 
