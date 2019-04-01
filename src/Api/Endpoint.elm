@@ -1,4 +1,4 @@
-module Api.Endpoint exposing (Endpoint, bookListing, createListing, listing, listings, request)
+module Api.Endpoint exposing (Endpoint, bookListing, createListing, listing, listings, request, commentListing)
 
 import Http
 import Url.Builder exposing (QueryParameter)
@@ -59,6 +59,10 @@ listing id =
 bookListing : String -> Endpoint
 bookListing id =
     url [ "listings", id, "book" ] []
+
+commentListing : String -> Endpoint
+commentListing id =
+    url [ "listings", id, "comment" ] []
 
 
 createListing : Endpoint

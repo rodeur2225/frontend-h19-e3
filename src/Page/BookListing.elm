@@ -1,12 +1,12 @@
 module Page.BookListing exposing (Model, Msg(..), init, update, view)
 
 import Api
-import Api.Endpoint exposing (bookListing, listing)
+import Api.Endpoint exposing (bookListing, listing, commentListing)
 import Css exposing (..)
 import Form.AvailabilityInput
 import Html.Styled exposing (..)
-import Html.Styled.Attributes exposing (checked, css, for, hidden, id, type_, value)
-import Html.Styled.Events exposing (onCheck, onSubmit)
+import Html.Styled.Attributes exposing (checked, css, for, hidden, id, type_, value, placeholder)
+import Html.Styled.Events exposing (onCheck, onSubmit, onInput)
 import Http
 import Iso8601
 import Json.Encode as Encode
@@ -25,6 +25,7 @@ type alias Model =
     { session : Session.Data
     , listing : Status Listing.Model
     , bookings : List Booking
+    , feedbacks : Comment
     }
 
 
@@ -37,10 +38,12 @@ type Status a
 type alias Booking =
     Time.Posix
 
+type alias Comment =
+    String
 
 init : Session.Data -> String -> ( Model, Cmd Msg )
 init session id =
-    ( Model session Loading [], Api.get (listing id) GotListing Listing.listingDecoder )
+    ( Model session Loading [] "", Api.get (listing id) GotListing Listing.listingDecoder )
 
 
 
@@ -52,7 +55,10 @@ type Msg
     | AddBooking Booking
     | RemoveBooking Booking
     | SubmitBookings
+    | ChangeCommentary String
+    | SubmitCommentary
     | ListingBooked (Result Http.Error ())
+    | ListingCommented (Result Http.Error ())
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -85,12 +91,30 @@ update message model =
         ListingBooked _ ->
             ( model, Cmd.none )
 
+        SubmitCommentary ->
+            case  model.listing of
+                Success listing ->
+                    ( model, Api.post (commentListing listing.id) (encodeFeedbacks model.feedbacks) ListingCommented )
+                _ ->
+                    ( model, Cmd.none )
+
+        ChangeCommentary comment ->
+            ( { model | feedbacks =  comment }, Cmd.none)
+
+
+        ListingCommented _ ->
+            ( model, Cmd.none )
+
+
 
 encodeBookings : List Booking -> Encode.Value
 encodeBookings bookings =
     Encode.object
         [ ( "bookings", Encode.list Iso8601.encode bookings ) ]
 
+encodeFeedbacks : Comment -> Encode.Value
+encodeFeedbacks comment =
+    Encode.string(comment)
 
 
 -- VIEW
@@ -114,6 +138,35 @@ view model =
                     ]
                 ]
             }
+
+viewFeedback : Listing.Model -> Html Msg
+viewFeedback listing =
+    p
+            [ css
+                [ display block
+                , borderRadius (px 20)
+                , border3 (px 1) solid (rgba 0 0 0 0.05)
+                , margin (px 8)
+                , padding2 (px 8) (px 12)
+                , fontSize (rem 1)
+                , textDecoration none
+                , color (hex "000")
+                , hover
+                    [ boxShadow4 (px 0) (px 1) (px 3) (rgba 0 0 0 0.5) ]
+                ]
+            ]
+            [ text "banana" ]
+
+viewCommentaryForm : feedbacks -> Html Msg
+viewCommentaryForm feedbacks =
+    form
+        [ onSubmit SubmitCommentary ]
+        [
+        Ui.label [] [text "Comment"]
+        , Ui.input [ onInput ChangeCommentary, value "", placeholder "Comment" ] []
+        , Ui.submit [ value "Submit" ] []
+        ]
+
 
 
 viewListing : Listing.Model -> Html Msg

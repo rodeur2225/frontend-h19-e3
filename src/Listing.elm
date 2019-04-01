@@ -56,16 +56,13 @@ type Msg
 
 -- DECODER
 
-
 idDecoder : Decoder String
 idDecoder =
     field "id" string
 
-
 titleDecoder : Decoder String
 titleDecoder =
     field "title" string
-
 
 ownerDecoder : Decoder Owner
 ownerDecoder =
@@ -76,11 +73,9 @@ ownerDecoder =
             (field "email" string)
         )
 
-
 descriptionDecoder : Decoder String
 descriptionDecoder =
     field "description" string
-
 
 availabilitiesDecoder : Decoder (List Time.Posix)
 availabilitiesDecoder =
@@ -99,11 +94,9 @@ listingDecoder : Decoder Model
 listingDecoder =
     map7 Model idDecoder titleDecoder ownerDecoder descriptionDecoder availabilitiesDecoder priceDecoder feedbacksDecoder
 
-
 decoder : Decoder (List Model)
 decoder =
     field "listings" (list listingDecoder)
-
 
 encode : Model -> Encode.Value
 encode listing =
